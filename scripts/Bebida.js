@@ -1,11 +1,11 @@
 export default class Bebida {
-  constructor(name, image, description, price) {
-    this.name = name;
-    this.image = image;
-    this.description = description;
-    this.price = price;
+  constructor(novaBebida) {
+    this.nome = novaBebida.nome;
+    this.imagem = novaBebida.imagem;
+    this.descricao = novaBebida.descricao;
+    this.preco = novaBebida.preco;
+    this.elemento = null;
 
-    this.getBebidaView();
   }
 
   selecionarBebida() {
@@ -16,7 +16,6 @@ export default class Bebida {
     this.elemento.classList.add("selecionado");
 
     // bebidaSelecionada = { nome, preco }; ??
-    // verificarPedido(); ??
   }
 
   getBebidaView() {
@@ -38,6 +37,6 @@ export default class Bebida {
     `;
     
     this.elemento = view;
-    document.querySelector(".opcoes.bebida").appendChild(view);
+    return this.elemento;
   }
 }

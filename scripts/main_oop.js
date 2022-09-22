@@ -1,14 +1,12 @@
+import Pedido from "./Pedido";
+import Prato from "./Prato";
+import Bebida from "./Bebida";
+import Sobremesa from "./Sobremesa";
+
 import img_prato from "../img/frango_yin_yang.png";
 import img_bebida from "../img/coquinha_gelada.png";
 import img_sobremesa from "../img/pudim.png";
 
-let pratoSelecionado = null;
-let bebidaSelecionada = null;
-let sobremesaSelecionada = null;
-
-const btnConfirmar = document.querySelector(".confirmar");
-const btnCancelar = document.querySelector(".cancelar");
-const btnPedir = document.querySelector(".fazer-pedido");
 
 const pratos = [
   {
@@ -73,83 +71,108 @@ const sobremesas = [
   },
 ];
 
-function getPrecoTotal() {
-  return (
-    pratoSelecionado.preco +
-    bebidaSelecionada.preco +
-    sobremesaSelecionada.preco
-  );
-}
+class App {
+  constructor(pratos, bebidas, sobremesas) {
+    this.pratos = pratos;
+    this.bebidas = bebidas;
+    this.sobremesas = sobremesas;
 
-function confirmarPedido() {
-  const modal = document.querySelector(".overlay");
-  modal.classList.remove("escondido");
-
-  document.querySelector(".confirmar-pedido .prato .nome").innerHTML =
-    pratoSelecionado.nome;
-  document.querySelector(".confirmar-pedido .prato .preco").innerHTML =
-    pratoSelecionado.preco.toFixed(2);
-
-  document.querySelector(".confirmar-pedido .bebida .nome").innerHTML =
-    bebidaSelecionada.nome;
-  document.querySelector(".confirmar-pedido .bebida .preco").innerHTML =
-    bebidaSelecionada.preco.toFixed(2);
-
-  document.querySelector(".confirmar-pedido .sobremesa .nome").innerHTML =
-    sobremesaSelecionada.nome;
-  document.querySelector(".confirmar-pedido .sobremesa .preco").innerHTML =
-    sobremesaSelecionada.preco.toFixed(2);
-
-  document.querySelector(".confirmar-pedido .total .preco").innerHTML =
-    getPrecoTotal().toFixed(2);
-}
-
-function cancelarPedido() {
-  const modal = document.querySelector(".overlay");
-  modal.classList.add("escondido");
-}
-
-function enviarZap() {
-  const telefoneRestaurante = 553299999999;
-  const encodedText = encodeURIComponent(
-    `Olá, gostaria de fazer o pedido: \n- Prato: ${pratoSelecionado.nome
-    } \n- Bebida: ${bebidaSelecionada.nome} \n- Sobremesa: ${sobremesaSelecionada.nome
-    } \nTotal: R$ ${getPrecoTotal().toFixed(2)}`
-  );
-
-  const urlWhatsapp = `https://wa.me/${telefoneRestaurante}?text=${encodedText}`;
-  window.open(urlWhatsapp);
-}
-
-function verificarPedido() {
-  if (pratoSelecionado && bebidaSelecionada && sobremesaSelecionada) {
-    btnPedir.classList.add("ativo");
-    btnPedir.disabled = false;
-    btnPedir.innerHTML = "Fazer pedido";
+    this.pedido = null;
+    
+    this.btnConfirmar = document.querySelector(".confirmar");
+    this.btnCancelar = document.querySelector(".cancelar");
+    this.btnPedir = document.querySelector(".fazer-pedido");
+    
+    this.pratosContainer = document.querySelector(".opcoes.prato");
+    this.bebidasContainer = document.querySelector(".opcoes.bebida");
+    this.sobremesasContainer = document.querySelector(".opcoes.sobremesa");
+    
+    this.initialize();
   }
+
+  verificarPedido() {
+    if (this.pedido.getPedidoValido()) {
+      btnPedir.classList.add("ativo");
+      btnPedir.disabled = false;
+      btnPedir.innerHTML = "Fazer pedido";
+    }
+  }
+
+  confirmarPedido() {
+    const modal = document.querySelector(".overlay");
+    modal.classList.remove("escondido");
+
+    document.querySelector(".confirmar-pedido .prato .nome").innerHTML =
+      this.pedido.pratoSelecionado.nome;
+    document.querySelector(".confirmar-pedido .prato .preco").innerHTML =
+      this.pedido.pratoSelecionado.preco.toFixed(2);
+
+    document.querySelector(".confirmar-pedido .bebida .nome").innerHTML =
+      this.pedido.bebidaSelecionada.nome;
+    document.querySelector(".confirmar-pedido .bebida .preco").innerHTML =
+      this.pedido.bebidaSelecionada.preco.toFixed(2);
+
+    document.querySelector(".confirmar-pedido .sobremesa .nome").innerHTML =
+      this.pedido.sobremesaSelecionada.nome;
+    document.querySelector(".confirmar-pedido .sobremesa .preco").innerHTML =
+      this.pedido.sobremesaSelecionada.preco.toFixed(2);
+
+    document.querySelector(".confirmar-pedido .total .preco").innerHTML =
+      this.pedido.getPrecoTotal().toFixed(2);
+  }
+  
+  cancelarPedido() {
+    const modal = document.querySelector(".overlay");
+    modal.classList.add("escondido");
+  }
+
+  initialize() {
+    this.pedido = new Pedido();
+
+    this.pratos.forEach((prato) => {
+      new Prato(prato);
+    });
+    
+    this.bebidas.forEach((bebida) => {
+      new Bebida(bebida);
+    });
+    
+    this.sobremesas.forEach((sobremesa) => {
+      new Sobremesa(sobremesa);
+    });
+
+    this.btnConfirmar.addEventListener("click", () => {
+      this.enviarZap();
+    });
+    
+    this.btnCancelar.addEventListener("click", () => {
+      this.cancelarPedido();
+    });
+    
+    this.btnPedir.addEventListener("click", () => {
+      this.confirmarPedido();
+    });
+
+    this.pratos.forEach((prato) => this.pratosContainer.appendChild(prato.getPratoView()));
+    
+    this.bebidas.forEach((bebida) => this.bebidasContainer.appendChild(bebida.getBebidaView()));
+
+    this.sobremesas.forEach((sobremesa) => this.sobremesasContainer.appendChild(sobremesa.getSobremesaView()));
+
+  }
+
+  enviarZap() {
+    const telefoneRestaurante = 553299999999;
+    const encodedText = encodeURIComponent(
+      `Olá, gostaria de fazer o pedido: \n- Prato: ${this.pedido.pratoSelecionado.nome
+      } \n- Bebida: ${this.pedido.bebidaSelecionada.nome} \n- Sobremesa: ${this.pedido.sobremesaSelecionada.nome
+      } \nTotal: R$ ${this.pedido.getPrecoTotal().toFixed(2)}`
+    );
+
+    const urlWhatsapp = `https://wa.me/${telefoneRestaurante}?text=${encodedText}`;
+    window.open(urlWhatsapp);
+  }
+
 }
 
-const pratosContainer = document.querySelector(".opcoes.prato");
-pratos.forEach((prato) => pratosContainer.appendChild(getPratoView(prato)));
-
-const bebidasContainer = document.querySelector(".opcoes.bebida");
-bebidas.forEach((bebida) =>
-  bebidasContainer.appendChild(getBebidaView(bebida))
-);
-
-const sobremesasContainer = document.querySelector(".opcoes.sobremesa");
-sobremesas.forEach((sobremesa) =>
-  sobremesasContainer.appendChild(getSobremesaView(sobremesa))
-);
-
-btnConfirmar.addEventListener("click", () => {
-  enviarZap();
-});
-
-btnCancelar.addEventListener("click", () => {
-  cancelarPedido();
-});
-
-btnPedir.addEventListener("click", () => {
-  confirmarPedido();
-});
+const newApp = new App(pratos, bebidas, sobremesas);

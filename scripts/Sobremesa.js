@@ -1,11 +1,11 @@
 export default class Sobremesa {
-  constructor(name, image, description, price) {
-    this.name = name;
-    this.image = image;
-    this.description = description;
-    this.price = price;
+  constructor(novaSobremesa) {
+    this.nome = novaSobremesa.nome;
+    this.imagem = novaSobremesa.imagem;
+    this.descricao = novaSobremesa.descricao;
+    this.preco = novaSobremesa.preco;
+    this.elemento = null;
 
-    this.getSobremesaView();
   }
 
   selecionarSobremesa() {
@@ -16,7 +16,6 @@ export default class Sobremesa {
     this.elemento.classList.add("selecionado");
 
     // sobremesaSelecionada = { nome, preco }; ??
-    // verificarPedido(); ??
   }
 
   getSobremesaView() {
@@ -38,7 +37,7 @@ export default class Sobremesa {
     `;
 
     this.elemento = view;
-    document.querySelector(".opcoes.sobremesa").appendChild(view);
+    return this.elemento;
   }
 
 }

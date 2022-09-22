@@ -1,26 +1,24 @@
-class Pedido {
-  /* propriedades:
-    - prato selecionado
-    - bebida selecionada
-    - sobremesa selecionada
-    - botão pedir
+export default class Pedido {
+  constructor() {
+    this.pratoSelecionado = null;
+    this.bebidaSelecionada = null;
+    this.sobremesaSelecionada = null;
+    this.precoTotal = 0;
+  }
 
-  */
+  getPrecoTotal() {
+    this.precoTotal = this?.pratoSelecionado.preco + this?.bebidaSelecionada.preco + this?.sobremesaSelecionada.preco;
 
-  /* metodos:
-    - verificar pedido
-    - cancelar pedido
-    - confirmar pedido
-    - obter preco do pedido
-  */
+    return precoTotal;
+  }
 
+  getPedidoValido() {
+    if (this.pratoSelecionado && this.bebidaSelecionada && this.sobremesaSelecionada) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 }
-
-/*
-Se servir de ajuda a alguém, eu criei um classe pedido contendo as info, inclusive o verificar pedido, e salvei numa variavel.
-
-Depois criei as classes de Prato, Sobremesa e Bebida, passando o pedido pra dentro dessas classes
-
-Dessa forma consegui chamar a função verificarPedido e atualizar as variáveis
-*/

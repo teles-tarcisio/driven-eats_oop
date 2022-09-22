@@ -1,12 +1,11 @@
 export default class Prato {
-  constructor(nome, imagem, descricao, preco) {
-    this.nome = nome;
-    this.imagem = imagem;
-    this.descricao = descricao;
-    this.preco = preco;
+  constructor(novoPrato) {
+    this.nome = novoPrato.nome;
+    this.imagem = novoPrato.imagem;
+    this.descricao = novoPrato.descricao;
+    this.preco = novoPrato.preco;
     this.elemento = null;
 
-    this.getPratoView();
   }
 
   selecionarPrato() {
@@ -17,7 +16,6 @@ export default class Prato {
     this.elemento.classList.add("selecionado");
     
     // como fazer pratoSelecionado = this?
-    // como verificarPedido?
 
   }
 
@@ -39,6 +37,6 @@ export default class Prato {
       </div>
     `;
     this.elemento = view;
-    document.querySelector(".opcoes.prato").appendChild(view);
+    return this.elemento;
   }
 }
